@@ -116,12 +116,13 @@ namespace HotelBooking.UnitTests
         [Fact]
         public void GetById_RoomDoesNotExist_ReturnsNotFound()
         {
-            // Act
-            var result = controller.Get(3) as NotFoundResult; // ID 3 does not exist in the setup
+            // Act: Attempt to retrieve a room with ID 3, which does not exist in the setup data.
+            var result = controller.Get(3) as NotFoundResult; // ID 3 is not present in the mock repository.
 
-            // Assert
+            // Assert: Verify that the result is a NotFoundResult, indicating the room was not found.
             Assert.IsType<NotFoundResult>(result);
         }
+
         
     }
 }

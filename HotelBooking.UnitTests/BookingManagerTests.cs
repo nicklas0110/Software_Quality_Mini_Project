@@ -125,57 +125,68 @@ namespace HotelBooking.UnitTests
             }
         }
 
-
-
-
         [Fact]
         public void FindAvailableRoom_WhenAllRoomsAreBooked_ReturnsMinusOne()
         {
-            // Arrange
+            // Arrange: Set up a date range (October 1, 2025, to October 5, 2025).
             var startDate = DateTime.Parse("2025-10-01");
             var endDate = DateTime.Parse("2025-10-05");
 
+            // Arrange: Create two bookings that occupy all available rooms for the given date range.
             var bookings = new List<Booking>
             {
                 new Booking { RoomId = 1, StartDate = startDate, EndDate = endDate, IsActive = true },
                 new Booking { RoomId = 2, StartDate = startDate, EndDate = endDate, IsActive = true }
             };
 
+            // Arrange: Create two rooms (Room 1 and Room 2).
             var rooms = new List<Room> { new Room { Id = 1 }, new Room { Id = 2 } };
+
+            // Set up mock repositories to return the created bookings and rooms.
             _mockBookingRepository.Setup(repo => repo.GetAll()).Returns(bookings);
             _mockRoomRepository.Setup(repo => repo.GetAll()).Returns(rooms);
+
+            // Initialize the BookingManager with the mocked repositories.
             _bookingManager = new BookingManager(_mockBookingRepository.Object, _mockRoomRepository.Object);
 
-            // Act
+            // Act: Attempt to find an available room for the specified date range.
             var roomId = _bookingManager.FindAvailableRoom(startDate, endDate);
 
-            // Assert
+            // Assert: Verify that no rooms are available and -1 is returned.
             Assert.Equal(-1, roomId);
         }
+
 
         [Fact]
         public void FindAvailableRoom_WhenRoomIsAvailable_ReturnsRoomId()
         {
-            // Arrange
+            // Arrange: Set up a date range (October 7, 2025, to October 10, 2025).
             var startDate = DateTime.Parse("2025-10-07");
             var endDate = DateTime.Parse("2025-10-10");
 
+            // Arrange: Create a booking for Room 2 during the specified date range.
             var bookings = new List<Booking>
             {
                 new Booking { RoomId = 2, StartDate = startDate, EndDate = endDate, IsActive = true }
             };
 
+            // Arrange: Create two rooms (Room 1 and Room 2).
             var rooms = new List<Room> { new Room { Id = 1 }, new Room { Id = 2 } };
+
+            // Set up mock repositories to return the created bookings and rooms.
             _mockBookingRepository.Setup(repo => repo.GetAll()).Returns(bookings);
             _mockRoomRepository.Setup(repo => repo.GetAll()).Returns(rooms);
+
+            // Initialize the BookingManager with the mocked repositories.
             _bookingManager = new BookingManager(_mockBookingRepository.Object, _mockRoomRepository.Object);
 
-            // Act
+            // Act: Attempt to find an available room for the specified date range.
             var roomId = _bookingManager.FindAvailableRoom(startDate, endDate);
 
-            // Assert
+            // Assert: Verify that Room 1 is returned as it is available.
             Assert.Equal(1, roomId);
         }
+
 
 
         [Fact]
