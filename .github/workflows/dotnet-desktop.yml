@@ -29,3 +29,6 @@ jobs:
 
       - name: Run tests
         run: dotnet test --no-build --verbosity normal
+
+      - name: List Test DLLs
+        run: ls -R /home/runner/work/Software_Quality_Mini_Project/Software_Quality_Mini_Project/HotelBooking.UnitTests/bin/Debug/
