@@ -111,5 +111,17 @@ namespace HotelBooking.UnitTests
             // Assert against the mock object
             fakeRoomRepository.Verify(x => x.Remove(It.IsAny<int>()));
         }
+        
+        //aditional tests:
+        [Fact]
+        public void GetById_RoomDoesNotExist_ReturnsNotFound()
+        {
+            // Act
+            var result = controller.Get(3) as NotFoundResult; // ID 3 does not exist in the setup
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+        
     }
 }
