@@ -16,9 +16,21 @@ namespace HotelBooking.Infrastructure.Repositories
 
         public void Add(Room entity)
         {
-            db.Room.Add(entity);
-            db.SaveChanges();
+            var existingRoom = db.Room.Find(entity.Id);
+            if (existingRoom == null)
+            {
+                db.Room.Add(entity);
+                db.SaveChanges();
+            }
+            else
+            {
+                // Optionally, update the existing entity or log that addition was skipped.
+                // Update logic here if needed, or just skip if exact duplicates are expected.
+                db.Entry(existingRoom).CurrentValues.SetValues(entity);
+                db.SaveChanges();
+            }
         }
+
 
         public void Edit(Room entity)
         {

@@ -29,10 +29,10 @@ namespace HotelBooking.UnitTests
         public void FindAvailableRoom_StartDateNotInTheFuture_ThrowsArgumentException()
         {
             // Arrange
-            DateTime date = DateTime.Today;
+            DateTime date = DateTime.Today.AddDays(-1);
 
             // Act
-            Action act = () => _bookingManager.FindAvailableRoom(date, date);
+            Action act = () => _bookingManager.FindAvailableRoom(date, date, 1);
 
             // Assert
             Assert.Throws<ArgumentException>(act);
@@ -53,7 +53,7 @@ namespace HotelBooking.UnitTests
             _bookingManager = new BookingManager(_mockBookingRepository.Object, _mockRoomRepository.Object);
 
             // Act
-            int roomId = _bookingManager.FindAvailableRoom(date, date);
+            int roomId = _bookingManager.FindAvailableRoom(date, date, 1);
 
             // Assert
             Assert.NotEqual(-1, roomId); // Ensure that a room is found.
@@ -69,7 +69,7 @@ namespace HotelBooking.UnitTests
             DateTime date = DateTime.Today.AddDays(1);
 
             // Act
-            int roomId = _bookingManager.FindAvailableRoom(date, date);
+            int roomId = _bookingManager.FindAvailableRoom(date, date, 1);
 
             var bookingForReturnedRoomId = _bookingRepository.GetAll().Where(
                 b => b.RoomId == roomId
@@ -150,7 +150,7 @@ namespace HotelBooking.UnitTests
             _bookingManager = new BookingManager(_mockBookingRepository.Object, _mockRoomRepository.Object);
 
             // Act: Attempt to find an available room for the specified date range.
-            var roomId = _bookingManager.FindAvailableRoom(startDate, endDate);
+            var roomId = _bookingManager.FindAvailableRoom(startDate, endDate, 1);
 
             // Assert: Verify that no rooms are available and -1 is returned.
             Assert.Equal(-1, roomId);
@@ -181,7 +181,7 @@ namespace HotelBooking.UnitTests
             _bookingManager = new BookingManager(_mockBookingRepository.Object, _mockRoomRepository.Object);
 
             // Act: Attempt to find an available room for the specified date range.
-            var roomId = _bookingManager.FindAvailableRoom(startDate, endDate);
+            var roomId = _bookingManager.FindAvailableRoom(startDate, endDate, 1);
 
             // Assert: Verify that Room 1 is returned as it is available.
             Assert.Equal(1, roomId);

@@ -44,14 +44,15 @@ namespace HotelBooking.IntegrationTests
             // This will delete the in-memory database
             connection.Close();
         }
-
+        
         [Fact]
         public void FindAvailableRoom_RoomNotAvailable_RoomIdIsMinusOne()
         {
-            // Act
-            var roomId = bookingManager.FindAvailableRoom(DateTime.Today.AddDays(8), DateTime.Today.AddDays(8));
+            // Assume that room with ID 101 is initialized and should be checked
+            var roomId = bookingManager.FindAvailableRoom(DateTime.Today.AddDays(8), DateTime.Today.AddDays(8), 101);
             // Assert
             Assert.Equal(-1, roomId);
         }
+
     }
 }

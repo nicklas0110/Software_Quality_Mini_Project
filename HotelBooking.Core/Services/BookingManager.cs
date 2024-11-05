@@ -18,11 +18,11 @@ namespace HotelBooking.Core
 
         public bool CreateBooking(Booking booking)
         {
-            int roomId = FindAvailableRoom(booking.StartDate, booking.EndDate);
+            // Explicitly check if the requested room is available for the dates
+            int availableRoomId = FindAvailableRoom(booking.StartDate, booking.EndDate, booking.RoomId);
 
-            if (roomId >= 0)
+            if (availableRoomId == booking.RoomId)
             {
-                booking.RoomId = roomId;
                 booking.IsActive = true;
                 bookingRepository.Add(booking);
                 return true;
@@ -33,23 +33,25 @@ namespace HotelBooking.Core
             }
         }
 
-        public int FindAvailableRoom(DateTime startDate, DateTime endDate)
-        {
-            if (startDate <= DateTime.Today || startDate > endDate)
-                throw new ArgumentException("The start date cannot be in the past or later than the end date.");
 
-            var activeBookings = bookingRepository.GetAll().Where(b => b.IsActive);
-            foreach (var room in roomRepository.GetAll())
+        public int FindAvailableRoom(DateTime startDate, DateTime endDate, int requestedRoomId)
+        {
+            var allRooms = roomRepository.GetAll();
+            var bookings = bookingRepository.GetAll();
+
+            foreach (var room in allRooms)
             {
-                var activeBookingsForCurrentRoom = activeBookings.Where(b => b.RoomId == room.Id);
-                if (activeBookingsForCurrentRoom.All(b => startDate < b.StartDate &&
-                    endDate < b.StartDate || startDate > b.EndDate && endDate > b.EndDate))
+                var bookingsForRoom = bookings.Where(b => b.RoomId == room.Id && b.IsActive);
+                bool isRoomAvailable = bookingsForRoom.All(b => endDate < b.StartDate || startDate > b.EndDate);
+
+                if (isRoomAvailable && room.Id == requestedRoomId)
                 {
-                    return room.Id;
+                    return room.Id; // Return the ID only if the room is available and it's the requested one
                 }
             }
-            return -1;
+            return -1; // Return -1 if no suitable room is found
         }
+
 
         public List<DateTime> GetFullyOccupiedDates(DateTime startDate, DateTime endDate)
         {

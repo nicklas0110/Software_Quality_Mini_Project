@@ -6,7 +6,8 @@ namespace HotelBooking.Core
     public interface IBookingManager
     {
         bool CreateBooking(Booking booking);
-        int FindAvailableRoom(DateTime startDate, DateTime endDate);
+        int FindAvailableRoom(DateTime startDate, DateTime endDate, int roomId);  // Updated to include roomId
         List<DateTime> GetFullyOccupiedDates(DateTime startDate, DateTime endDate);
     }
+
 }
